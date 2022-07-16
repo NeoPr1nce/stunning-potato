@@ -1,0 +1,3 @@
+﻿  dynamic-structures.cpp
+C:\Users\diman\source\repos\stunning-potato\dynamic-structures\dynamic-structures.cpp(161): warning C4715: 'getElement<int>': not all control paths return a value
+  dynamic-structures.vcxproj -> C:\Users\diman\Source\Repos\stunning-potato\x64\Debug\dynamic-structures.exe

@@ -86,6 +86,133 @@ template <typename T> int getLength(node<T>* root)
     return i;
 }
 
+/*
+* root -> xA -> xB -> xC -> xD -> xE -> NULL
+*         1      2     3     4     5
+* root = root->next:
+* root -> xB -> xC -> xD -> xE
+*          2     3     4     5
+* root -> xB -> xC -> n -> xD -> xE
+* 1. найти нужный элемент по индексу i
+* сделать от него шаг назад
+*   2.1 провер€ть значени€ root до момента нахождени€ i
+*   2.2 присвоить q = элемент по индексу i-1
+* добавить новый элемент списка после i-1
+*    xA -> xB -> xC -> xD -> xE
+*     ^ root
+*    xA -> xB -> xC -> n -> xD -> xE
+*   
+*    before:
+* q->    xC = next  = xD
+*             value = 3
+* root-> xD = next  = xE
+*             value = 4
+*
+*    after:
+*q->     xC = next  = n
+*             value = 3
+*         n = next  = xD
+*             value = ??
+*root->  xD = next  = xE
+*             value = 4
+*
+*    xA -> xB -> xC -> xD -> xE
+*     ^ root
+*    q -> NULL
+*    xA -> xB -> xC -> xD -> xE
+*     ^     ^ root
+*    q
+*    xA -> xB -> xC -> xD -> xE
+*          ^     ^ root
+*          q
+*/
+
+template <typename T> node<T>* getElement(node<T> *&root)
+{
+    //1. get rid from console and keyboard input dependency
+    //2. fix insertion location
+    int i = 0;
+        cout << "i" << endl;
+        cin >> i;
+    int newValue = 0;
+    cout << "newValue" << endl;
+        cin >> newValue;
+    if (i == 0)
+    {
+        return insertAtStart(root, newValue);
+    }
+
+    // предыдущий элемент
+    node<T> *q = NULL;
+    node<T> *p = root;
+    int iterator = -1;
+    while (p != NULL )
+    {
+        q = p;
+        p = p->next;
+        iterator++;
+        if (iterator == i)
+        {
+            node<T>* newNode = new node<T>();
+            newNode->value = newValue;
+            newNode->next = p;
+            q->next = newNode;
+            return newNode;
+        }
+    }
+}
+
+// 1. добавить в начало списка
+template <typename T> node<T>* insertAtStart(node<T> *&root, T valueToInsert)
+{
+    /*
+    *    before:
+    *    root = next  = xD
+    *           value = 3
+    *
+    *    after:
+    *    newValue = next = root
+    *              value = valueToInsert
+    *        root = next = xD
+    *              value = 3
+    */
+    node<T>* newValue = new node<T>();
+    newValue->value = valueToInsert;
+    newValue->next = root;
+    root = newValue;
+    return root;
+}
+
+// 2. добавить в конец списка
+template <typename T> node<T>* insertAtEnd(node<T>* root, T valueToInsert)
+{
+    /*
+   * xA -> xB -> xC -> xD -> xE
+   *    
+   *      before:
+   *    root = next  = xA
+   *           value = ?
+   *           ....
+   *    xE   = next = NULL
+   *           value= ?
+   *
+   *    after:
+   *    xE       -> next = newValue
+   *                value= ?
+   *    newValue -> next = NULL
+   *                value = ?
+   */
+    node<T>* newValue = new node<T>();
+    newValue->value = valueToInsert;
+    while (root != NULL && root->next != NULL)
+    {
+        root = root->next;
+    }
+    root->next = newValue;
+    newValue->next = NULL;
+    return newValue;
+}
+
 int main()
 {
     // 1 -> 2 -> 3
@@ -98,6 +225,15 @@ int main()
 
     traverseList<int>(list);
     cout << endl << getLength<int>(list);
+    cout << endl << "**********" << endl;
+    insertAtEnd<int>(list, 4);
+    traverseList<int>(list);
+    // list -> xA -> xB -> xC -> xD -> xE
+    getElement<int>(list);
+    // if i == 0
+    // returnedPointer -> x0 -> xA -> xB -> xC -> xD -> xE
+    //                           ^- list
+    traverseList<int>(list);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
